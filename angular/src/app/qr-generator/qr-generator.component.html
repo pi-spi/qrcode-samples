@@ -1,0 +1,208 @@
+<div class="min-h-screen bg-zinc-100 py-16 font-sans text-zinc-900 dark:bg-zinc-900 dark:text-zinc-50">
+  <div class="mx-auto flex w-full max-w-6xl flex-col gap-12 rounded-3xl bg-white px-6 py-12 shadow-xl dark:bg-zinc-950 sm:px-10 lg:px-16">
+    <header class="space-y-4">
+      <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">
+        Générateur de QR Code PI-SPI
+      </h1>
+      <p class="max-w-3xl text-lg text-zinc-600 dark:text-zinc-400">
+        Cette application Angular démontre l'utilisation du SDK <code>&#64;pi-spi/qrcode</code> pour construire la payload EMV et
+        produire un QR Code SVG. Renseignez vos paramètres, visualisez le rendu, copiez la charge utile ou téléchargez
+        l'image prête à être imprimée.
+      </p>
+    </header>
+
+    <section class="grid gap-10 lg:grid-cols-[minmax(0,420px),1fr]">
+      <form
+        [formGroup]="form"
+        (ngSubmit)="submit()"
+        class="flex flex-col gap-6 rounded-3xl border border-zinc-200 bg-zinc-50 p-6 dark:border-zinc-800 dark:bg-zinc-900"
+        novalidate
+      >
+        <div class="space-y-2">
+          <label
+            class="text-sm font-medium"
+            for="countryCode"
+          >Pays (UEMOA)</label>
+          <select
+            id="countryCode"
+            formControlName="countryCode"
+            class="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 focus:border-pispi-amber focus:outline-none focus:ring-2 focus:ring-pispi-amber dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50"
+          >
+            <option
+              *ngFor="let country of countries"
+              [value]="country.code"
+            >{{ country.label }}</option>
+          </select>
+        </div>
+
+        <div class="space-y-2">
+          <label
+            class="text-sm font-medium"
+            for="alias"
+          >Alias (UUID v4)</label>
+          <input
+            id="alias"
+            type="text"
+            formControlName="alias"
+            class="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-pispi-amber focus:outline-none focus:ring-2 focus:ring-pispi-amber dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50"
+            required
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label
+            class="text-sm font-medium"
+            for="qrType"
+          >Type de QR Code</label>
+          <select
+            id="qrType"
+            formControlName="qrType"
+            class="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 focus:border-pispi-amber focus:outline-none focus:ring-2 focus:ring-pispi-amber dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50"
+          >
+            <option value="STATIC">Statique</option>
+            <option value="DYNAMIC">Dynamique</option>
+          </select>
+        </div>
+
+        <div class="space-y-2">
+          <label
+            class="text-sm font-medium"
+            for="referenceLabel"
+          >
+            {{ form.value.qrType === 'DYNAMIC' ? 'Identifiant unique de la transaction (txId)' : 'Reference Label' }}
+          </label>
+          <input
+            id="referenceLabel"
+            type="text"
+            formControlName="referenceLabel"
+            [placeholder]="referencePlaceholder"
+            class="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-pispi-amber focus:outline-none focus:ring-2 focus:ring-pispi-amber dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50"
+            required
+          />
+          <p
+            *ngIf="form.value.qrType !== 'DYNAMIC'"
+            class="text-xs text-zinc-500 dark:text-zinc-400"
+          >
+            Utilisez un identifiant métier (caisse, boutique, transaction…).
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <label
+            class="text-sm font-medium"
+            for="amount"
+          >Montant (optionnel)</label>
+          <input
+            id="amount"
+            type="text"
+            inputmode="numeric"
+            formControlName="amount"
+            placeholder="Ex. 2500"
+            class="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-pispi-amber focus:outline-none focus:ring-2 focus:ring-pispi-amber dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50"
+          />
+        </div>
+
+        <button
+          type="submit"
+          [disabled]="loading"
+          class="mt-2 inline-flex items-center justify-center rounded-full bg-pispi-amber px-5 py-2 text-sm font-semibold text-white transition hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-pispi-amber focus:ring-offset-2 focus:ring-offset-zinc-50 disabled:cursor-not-allowed disabled:bg-amber-300 dark:focus:ring-offset-zinc-900"
+        >
+          {{ loading ? 'Génération…' : 'Générer le QR Code' }}
+        </button>
+
+        <p
+          *ngIf="error"
+          class="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-200"
+        >
+          Erreur : {{ error }}
+        </p>
+      </form>
+
+      <div class="flex flex-col gap-6">
+        <div
+          class="flex flex-col items-center gap-4 rounded-3xl border border-zinc-200 bg-white p-6 text-center shadow-md dark:border-zinc-800 dark:bg-zinc-900"
+        >
+          <div class="text-sm uppercase tracking-[0.3em] text-pispi-amber">Aperçu QR Code</div>
+          <div
+            class="flex flex-col items-center justify-center"
+            [style.border]="'4px solid #542D00'"
+          >
+            <div class="flex w-[320px] items-center justify-center bg-pispi-brown py-2">
+              <img
+                src="assets/logo.png"
+                alt="Logo PI-SPI"
+                class="h-10"
+              />
+            </div>
+            <div
+              class="flex h-[320px] w-[320px] items-center justify-center bg-white p-4"
+              [innerHTML]="svg ?? ''"
+            ></div>
+          </div>
+          <div class="flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="button"
+              (click)="downloadSvg()"
+              [disabled]="!svg"
+              class="inline-flex items-center rounded-full border border-zinc-300 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-600 transition hover:border-pispi-amber hover:text-pispi-amber disabled:cursor-not-allowed disabled:border-zinc-200 disabled:text-zinc-300 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-pispi-amber dark:hover:text-pispi-amber"
+            >
+              Télécharger SVG
+            </button>
+            <button
+              type="button"
+              (click)="copyPayload()"
+              [disabled]="!payload"
+              class="inline-flex items-center rounded-full border border-zinc-300 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-600 transition hover:border-pispi-amber hover:text-pispi-amber disabled:cursor-not-allowed disabled:border-zinc-200 disabled:text-zinc-300 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-pispi-amber dark:hover:text-pispi-amber"
+            >
+              {{ copied ? 'Payload copiée' : 'Copier la payload' }}
+            </button>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          (click)="toggleAdvanced()"
+          class="inline-flex w-full items-center justify-center rounded-full border border-zinc-300 px-4 py-2 text-xs font-medium uppercase tracking-[0.3em] text-zinc-600 transition hover:border-pispi-amber hover:text-pispi-amber focus:outline-none focus:ring-2 focus:ring-pispi-amber focus:ring-offset-2 focus:ring-offset-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-pispi-amber dark:hover:text-pispi-amber dark:focus:ring-offset-zinc-900"
+        >
+          Mode avancé {{ showAdvanced ? '−' : '+' }}
+        </button>
+
+        <div
+          *ngIf="showAdvanced"
+          class="grid w-full max-w-full gap-4 rounded-3xl border border-zinc-200 bg-zinc-50 p-6 text-sm text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300"
+        >
+          <div class="space-y-1">
+            <h2 class="text-base font-semibold text-zinc-900 dark:text-zinc-50">Paramètres actuels</h2>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400">Utiles pour vérifier les valeurs envoyées au SDK.</p>
+          </div>
+          <ul class="grid gap-1 text-xs">
+            <li><span class="font-medium text-zinc-900 dark:text-zinc-100">Alias&nbsp;:</span> {{ form.value.alias }}</li>
+            <li><span class="font-medium text-zinc-900 dark:text-zinc-100">Pays&nbsp;:</span> {{ form.value.countryCode }}</li>
+            <li><span class="font-medium text-zinc-900 dark:text-zinc-100">Type&nbsp;:</span> {{ form.value.qrType }}</li>
+            <li><span class="font-medium text-zinc-900 dark:text-zinc-100">Référence&nbsp;:</span> {{ form.value.referenceLabel }}</li>
+            <li><span class="font-medium text-zinc-900 dark:text-zinc-100">Montant&nbsp;:</span> {{ amountDisplay }}</li>
+          </ul>
+          <div class="w-full overflow-x-auto rounded-2xl border border-zinc-200 bg-black text-green-400 shadow-inner dark:border-zinc-700">
+            <div class="flex items-center justify-between border-b border-zinc-800 px-5 py-3 text-xs uppercase tracking-[0.3em] text-zinc-400">
+              Payload EMV
+            </div>
+            <pre class="max-h-64 px-5 py-4 text-xs leading-6"><code>{{ payload || '—' }}</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer
+      class="rounded-2xl border border-dashed border-pispi-amber bg-pispi-amber/10 px-6 py-4 text-sm text-pispi-brown dark:border-pispi-amber/40 dark:bg-pispi-amber/10 dark:text-pispi-amber/80"
+    >
+      Cette page est un exemple d'application Angular qui met en œuvre le SDK
+      <a
+        href="https://www.npmjs.com/package/@pi-spi/qrcode"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="font-semibold text-pispi-brown underline dark:text-pispi-amber"
+      >&#64;pi-spi/qrcode</a>.
+      Vous pouvez l'adapter ou l'intégrer dans votre propre application.
+    </footer>
+  </div>
+</div>
