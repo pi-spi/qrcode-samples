@@ -74,4 +74,4 @@ Toutes les démos dépendent du paquet publié `@pi-spi/qrcode`. Après la publi
 
 ## Licence
 
-Ces exemples font partie du matériel sandbox PI-SPI. Adaptez-les librement pour vos expérimentations ou démonstrations internes. Pour un usage en production, assurez-vous de respecter les directives d’intégration PI-SPI.
+Ces exemples font partie du matériel sandbox PI-SPI. Adaptez-les librement pour vos expérimentations ou démonstrations internes. Pour un usage en production, assurez-vous de respecter les bonnes pratiques de sécurité.
