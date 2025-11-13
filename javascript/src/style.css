@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+code {
+  @apply rounded px-1 py-0.5 text-sm;
+  background-color: #FFF4DA;
+  color: #B37300;
+}

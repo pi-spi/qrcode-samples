@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html
+  lang="fr"
+  class="h-full"
+>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>PI-SPI QR Code Demo</title>
+  <!-- Favicon -->
+  <link
+    rel="icon"
+    type="image/png"
+    href="favicon-16x16.png"
+  />
+  <link
+    rel="icon"
+    type="image/png"
+    href="favicon-32x32.png"
+  />
+</head>
+
+<body class="min-h-full bg-zinc-100 text-zinc-900">
+  <div
+    id="app"
+    class="flex min-h-screen items-center justify-center p-6"
+  >
+    <div class="w-full max-w-4xl rounded-3xl bg-white p-10 shadow-2xl">
+      <h1 class="text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl">
+        QR Code PI-SPI • Librairie JavaScript
+      </h1>
+      <p class="mt-4 text-base text-zinc-600">
+        Cette démonstration HTML + Tailwind consomme la librairie <code
+          class="rounded bg-[#FFF4DA] px-1 py-0.5 text-sm text-[#B37300]">@pi-spi/qrcode</code> pour
+        générer un QR Code PI-SPI avec le motif officiel en points.
+      </p>
+      <div class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[360px,minmax(0,1fr)]">
+        <!-- Formulaire de génération du QR Code-->
+        <div>
+          <form
+            id="qr-form"
+            class="grid gap-4"
+          >
+            <div>
+              <label
+                for="country"
+                class="block text-sm font-medium text-zinc-700"
+              >Pays</label>
+              <select
+                id="country"
+                name="country"
+                class="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 shadow-sm focus:border-[#F2A900] focus:outline-none focus:ring focus:ring-[#F2A900]/30"
+                required
+              >
+                <option value="BJ">Bénin (BJ)</option>
+                <option value="BF">Burkina Faso (BF)</option>
+                <option
+                  value="CI"
+                  selected
+                >Côte d'Ivoire (CI)</option>
+                <option value="ML">Mali (ML)</option>
+                <option value="NE">Niger (NE)</option>
+                <option value="SN">Sénégal (SN)</option>
+                <option value="TG">Togo (TG)</option>
+                <option value="GW">Guinée-Bissau (GW)</option>
+              </select>
+            </div>
+            <div>
+              <label
+                for="alias"
+                class="block text-sm font-medium text-zinc-700"
+              >Alias de compte</label>
+              <input
+                id="alias"
+                name="alias"
+                type="text"
+                class="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 shadow-sm focus:border-[#F2A900] focus:outline-none focus:ring focus:ring-[#F2A900]/30"
+                value="3497a720-ab11-4973-9619-534e04f263a1"
+                required
+              />
+            </div>
+            <div>
+              <label
+                for="reference"
+                class="block text-sm font-medium text-zinc-700"
+              >Référence</label>
+              <input
+                id="reference"
+                name="reference"
+                type="text"
+                class="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 shadow-sm focus:border-[#F2A900] focus:outline-none focus:ring focus:ring-[#F2A900]/30"
+                value="SANDBOX_DEMO"
+                required
+              />
+              <p class="mt-1 text-xs text-zinc-500">Identifiant de transaction (QR dynamique), caisse, boutique, produit ou autre.</p>
+            </div>
+            <div>
+              <label
+                for="amount"
+                class="block text-sm font-medium text-zinc-700"
+              >Montant (optionnel)</label>
+              <input
+                id="amount"
+                name="amount"
+                type="number"
+                min="0"
+                step="0.01"
+                class="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 shadow-sm focus:border-[#F2A900] focus:outline-none focus:ring focus:ring-[#F2A900]/30"
+                placeholder="2500"
+              />
+            </div>
+            <fieldset class="grid gap-2">
+              <legend class="text-sm font-medium text-zinc-700">Type de QR Code</legend>
+              <div class="flex gap-4">
+                <label class="inline-flex items-center gap-2 text-sm text-zinc-700">
+                  <input
+                    type="radio"
+                    name="qrType"
+                    value="STATIC"
+                    checked
+                    class="h-4 w-4 border-zinc-300 text-[#F2A900] focus:ring-[#F2A900]/40"
+                  />
+                  Statique
+                </label>
+                <label class="inline-flex items-center gap-2 text-sm text-zinc-700">
+                  <input
+                    type="radio"
+                    name="qrType"
+                    value="DYNAMIC"
+                    class="h-4 w-4 border-zinc-300 text-[#F2A900] focus:ring-[#F2A900]/40"
+                  />
+                  Dynamique
+                </label>
+              </div>
+            </fieldset>
+            <button
+              type="submit"
+              class="inline-flex items-center justify-center rounded-lg bg-[#F2A900] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#d48f00] focus:outline-none focus:ring focus:ring-[#F2A900]/40"
+            >
+              Générer le QR Code
+            </button>
+          </form>
+        </div>
+
+        <!-- Résultat de la génération du QR Code-->
+        <div class="flex flex-col items-center justify-center gap-2">
+          <!-- Boutons de téléchargement-->
+          <div class="w-full flex items-center justify-center mb-2">
+            <button
+              type="button"
+              id="download"
+              class="inline-flex flex-1 items-center justify-center rounded-lg border border-[#F2A900] px-3 py-2 text-sm font-semibold text-[#F2A900] transition hover:bg-[#FFF4DA] focus:outline-none focus:ring focus:ring-[#F2A900]/40"
+            >
+              Télécharger en SVG
+            </button>
+          </div>
+          <!-- Image du QR Code-->
+          <div
+            class="flex w-full flex-col items-center"
+            style="border:4px solid #542D00"
+          >
+            <div
+              class="w-full flex items-center justify-center p-2"
+              style="background-color: #542D00"
+            >
+              <img
+                src="/logo.png"
+                alt="Logo PI-SPI"
+                class="h-10"
+              />
+            </div>
+            <div
+              id="qr-container"
+              class="w-[320px] py-2"
+              aria-live="polite"
+            ></div>
+
+          </div>
+        </div>
+
+
+      </div>
+      <div class="w-full">
+        <button
+          type="button"
+          id="advanced-toggle"
+          class="mt-2 inline-flex w-full items-center justify-center rounded-lg border border-[#F2A900] px-3 py-2 text-sm font-semibold text-[#F2A900] transition hover:bg-[#FFF4DA] focus:outline-none focus:ring focus:ring-[#F2A900]/40"
+        >
+          Mode avancé
+        </button>
+        <div
+          id="advanced-panel"
+          class="mt-3 hidden space-y-3 rounded-lg border border-zinc-200 bg-white p-3 text-xs text-zinc-700"
+        >
+          <div class="flex items-center gap-2">
+
+            <button
+              type="button"
+              id="copy-payload"
+              class="inline-flex items-center justify-center rounded-lg border border-zinc-300 px-3 py-2 text-sm font-semibold text-zinc-600 transition hover:bg-zinc-50 focus:outline-none focus:ring focus:ring-[#F2A900]/30"
+            >
+              Copier le contenu du QR Code
+            </button>
+          </div>
+          <pre
+            class="max-h-40 overflow-auto rounded-lg bg-zinc-900 p-3 text-emerald-400"
+            id="payload"
+          ></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script
+    type="module"
+    src="/src/main.js"
+  ></script>
+</body>
+
+</html>
