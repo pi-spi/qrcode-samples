@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BCEAO PISPI QR — Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Sora', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            pispi: {
+              50:  '#f0faf4',
+              100: '#d8f3e3',
+              200: '#b3e6c9',
+              300: '#7dd0a8',
+              400: '#46b482',
+              500: '#229668',
+              600: '#167853',
+              700: '#125f43',
+              800: '#104c37',
+              900: '#0e3f2e',
+              950: '#07231a',
+            },
+            gold: {
+              400: '#f5c842',
+              500: '#e6b020',
+            }
+          },
+          animation: {
+            'fade-up': 'fadeUp 0.5s ease forwards',
+            'spin-slow': 'spin 3s linear infinite',
+          },
+          keyframes: {
+            fadeUp: {
+              '0%': { opacity: '0', transform: 'translateY(16px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background: #07231a; }
+    .grid-bg {
+      background-image: linear-gradient(rgba(34,150,104,0.07) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(34,150,104,0.07) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .glass {
+      background: rgba(14, 63, 46, 0.55);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(34,150,104,0.25);
+    }
+    .glow { box-shadow: 0 0 40px rgba(34,150,104,0.18); }
+    .tab-btn.active {
+      background: #229668;
+      color: white;
+    }
+    .tag {
+      display: inline-block;
+      background: rgba(34,150,104,0.15);
+      border: 1px solid rgba(34,150,104,0.3);
+      color: #7dd0a8;
+      border-radius: 9999px;
+      padding: 2px 12px;
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.03em;
+    }
+    input, select {
+      background: rgba(7,35,26,0.7) !important;
+      border: 1px solid rgba(34,150,104,0.3);
+      color: #d8f3e3;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #46b482;
+      box-shadow: 0 0 0 3px rgba(34,150,104,0.15);
+    }
+    input::placeholder { color: rgba(125,208,168,0.35); }
+    select option { background: #0e3f2e; }
+    .qr-container svg { width: 100% !important; height: auto !important; }
+    .decoded-row:nth-child(even) { background: rgba(34,150,104,0.06); }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 1; }
+      70% { transform: scale(1.05); opacity: 0; }
+      100% { transform: scale(0.95); opacity: 0; }
+    }
+    .pulse-ring::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 9999px;
+      border: 2px solid #229668;
+      animation: pulse-ring 2s ease-out infinite;
+    }
+  </style>
+</head>
+<body class="font-sans text-pispi-100 min-h-screen grid-bg">
+
+  <!-- Header -->
+  <header class="border-b border-pispi-800/60 sticky top-0 z-50" style="background:rgba(7,35,26,0.85);backdrop-filter:blur(20px)">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="relative pulse-ring">
+          <div class="w-9 h-9 rounded-full bg-pispi-500 flex items-center justify-center">
+            <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5 text-white" stroke="currentColor" stroke-width="2">
+              <path d="M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3z"/>
+              <rect x="15" y="15" width="2.5" height="2.5" fill="currentColor" stroke="none"/>
+              <rect x="18.5" y="15" width="2.5" height="2.5" fill="currentColor" stroke="none"/>
+              <rect x="15" y="18.5" width="2.5" height="2.5" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="font-bold text-white leading-none tracking-tight">PISPI QR</div>
+          <div class="text-[11px] text-pispi-400 font-mono tracking-widest uppercase">BCEAO · Demo</div>
+        </div>
+      </div>
+      <div class="hidden sm:flex items-center gap-2">
+        <span class="tag">bceao-pispi-qrcode</span>
+        <a href="https://pypi.org/project/bceao-pispi-qrcode/" target="_blank"
+           class="text-xs text-pispi-400 hover:text-pispi-200 transition flex items-center gap-1">
+          PyPI
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+
+    <!-- Hero -->
+    <div class="text-center mb-14 animate-fade-up">
+      <div class="inline-flex items-center gap-2 bg-pispi-900/60 border border-pispi-700/50 rounded-full px-4 py-1.5 text-xs text-pispi-300 mb-5 font-mono">
+        <span class="w-1.5 h-1.5 rounded-full bg-gold-400 animate-pulse"></span>
+        Interopérabilité des paiements · Zone UEMOA
+      </div>
+      <h1 class="text-4xl sm:text-5xl font-bold text-white leading-tight mb-4">
+        Générez vos QR codes<br/>
+        <span class="text-pispi-400">PISPI BCEAO</span>
+      </h1>
+      <p class="text-pispi-300 text-lg max-w-xl mx-auto leading-relaxed">
+        Encodez et décodez des payloads QR conformes au standard EMV.
+      </p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex gap-2 mb-8 p-1 rounded-2xl glass w-fit mx-auto">
+      <button class="tab-btn active px-5 py-2.5 rounded-xl text-sm font-semibold transition-all" data-tab="generate">
+        ✦ Générer
+      </button>
+      <button class="tab-btn px-5 py-2.5 rounded-xl text-sm font-semibold text-pispi-300 hover:text-white transition-all" data-tab="decode">
+        ⌁ Décoder
+      </button>
+    </div>
+
+    <!-- Error -->
+    <div id="gen-error" class="hidden mt-4 mb-4 rounded-2xl border border-red-700/40 max-w-3xl mx-auto overflow-hidden"><div class="flex items-center gap-2 px-4 py-2 bg-red-900/40 border-b border-red-700/30"><svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span id="gen-error-step" class="text-xs font-mono font-semibold text-red-300 uppercase tracking-widest"></span></div><div id="gen-error-msg" class="px-4 py-3 text-sm font-mono text-red-300 bg-red-900/20"></div></div>
+
+    <!-- TAB: GENERATE -->
+    <div id="tab-generate" class="tab-content">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+        <!-- Form -->
+        <div class="lg:col-span-3 glass rounded-3xl p-7 glow">
+          <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-pispi-600 flex items-center justify-center text-xs">⊞</span>
+            Paramètres du QR code
+          </h2>
+
+          <div class="space-y-5">
+            <!-- Type -->
+            <div>
+              <label class="block text-xs font-semibold text-pispi-400 uppercase tracking-widest mb-2">Type de QR</label>
+              <div class="grid grid-cols-2 gap-3">
+                {% for val, label in qr_types %}
+                <label class="type-radio cursor-pointer">
+                  <input type="radio" name="qr_type" value="{{ val }}" class="sr-only" {% if val == 'DYNAMIC' %}checked{% endif %}>
+                  <div class="type-card rounded-xl border border-pispi-700/50 p-3.5 text-center transition-all hover:border-pispi-500">
+                    <div class="text-sm font-semibold text-pispi-200">{{ label }}</div>
+                    <!-- <div class="text-[11px] text-pispi-500 mt-0.5">
+                      {% if val == 'DYNAMIC' %}Montant variable{% else %}Montant fixe{% endif %}
+                    </div> -->
+                  </div>
+                </label>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Merchant ID -->
+            <div>
+              <label class="block text-xs font-semibold text-pispi-400 uppercase tracking-widest mb-2">
+                Alias du compte <span class="text-red-400">*</span>
+              </label>
+              <input id="merchant_id" type="text"
+                     placeholder="550e8400-e29b-41d4-a716-446655440000"
+                     value="550e8400-e29b-41d4-a716-446655440000"
+                     class="w-full rounded-xl px-4 py-3 text-sm font-mono" />
+            </div>
+
+            <!-- Country + Amount -->
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-pispi-400 uppercase tracking-widest mb-2">Pays</label>
+                <select id="country" class="w-full rounded-xl px-4 py-3 text-sm">
+                  {% for code, name in countries %}
+                  <option value="{{ code }}" {% if code == 'SN' %}selected{% endif %}>{{ name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-pispi-400 uppercase tracking-widest mb-2">
+                  Montant (FCFA)
+                  <span id="amount-badge-optional" class="normal-case font-normal text-pispi-600 text-[11px]">(optionnel)</span>
+                </label>
+                <input id="amount" type="number" placeholder="ex: 2000" value=""
+                       class="w-full rounded-xl px-4 py-3 text-sm" />
+              </div>
+            </div>
+
+            <!-- Reference -->
+            <div>
+              <label class="block text-xs font-semibold text-pispi-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                Référence
+                <span id="ref-badge-required" class="hidden normal-case font-normal text-red-400 text-[11px] bg-red-400/10 border border-red-400/30 rounded-full px-2 py-0.5">obligatoire</span>
+                <span id="ref-badge-optional" class="normal-case font-normal text-pispi-600 text-[11px]">(optionnel)</span>
+              </label>
+              <input id="reference" type="text" placeholder="ex: Tx-caisse1" value="Tx-caisse1"
+                     class="w-full rounded-xl px-4 py-3 text-sm" />
+              <p id="ref-hint" class="hidden mt-1.5 text-xs text-red-400">La référence est obligatoire pour un QR code dynamique.</p>
+            </div>
+
+            <!-- Submit -->
+            <button id="btn-generate"
+                    class="w-full py-3.5 rounded-xl bg-pispi-500 hover:bg-pispi-400 text-white font-bold text-sm transition-all active:scale-95 flex items-center justify-center gap-2 mt-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
+              Générer le QR code
+            </button>
+          </div>
+        </div>
+
+        <!-- Result -->
+        <div class="lg:col-span-2 flex flex-col gap-5">
+
+          <!-- QR SVG -->
+          <div class="glass rounded-3xl p-6 flex flex-col items-center justify-center min-h-56" id="qr-panel">
+            <div id="qr-placeholder" class="text-center">
+              <div class="w-20 h-20 rounded-2xl border-2 border-dashed border-pispi-700 flex items-center justify-center mx-auto mb-3 opacity-50">
+                <svg class="w-8 h-8 text-pispi-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3z" stroke-width="1.5"/>
+                </svg>
+              </div>
+              <p class="text-pispi-600 text-sm">Le QR code apparaîtra ici</p>
+            </div>
+            <!-- <div id="qr-svg-container" class="qr-container w-full hidden rounded-2xl overflow-hidden bg-white p-3"></div> -->
+            <div id="qr-svg-container" class="qr-container w-full hidden">
+              <div class="rounded-2xl overflow-hidden shadow-xl" style="background:#3d2200; padding: 10px;">
+                <!-- Header PISPI -->
+                <!-- <div class="flex items-center justify-center gap-2 py-2 mb-2" style="background:#3d2200;">
+                  <div class="w-7 h-7 rounded-full flex items-center justify-center" style="background:#e6a800;">
+                    <span class="text-white font-bold text-xs">π</span>
+                  </div>
+                  <span class="font-bold text-white tracking-widest text-sm uppercase">SPi</span>
+                  <span class="text-[10px] text-yellow-400/70 font-mono">BCEAO</span>
+                </div> -->
+                <div class="py-3 text-center text-sm font-semibold tracking-[0.35em] text-amber-200">
+                  {% load static %}
+                  <img
+                    src="{% static 'qrapp/images/logoblanc-octojaune.png' %}"
+                      alt="PI-SPI"
+                      class="h-12 w-auto mx-auto"
+                  >
+                </div>
+                <!-- QR Code blanc -->
+                <div id="qr-svg-inner" class="rounded-xl overflow-hidden bg-white p-3"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payload string -->
+          <div class="glass rounded-3xl p-5 hidden" id="payload-panel">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold text-pispi-400 uppercase tracking-widest">Payload encodé</span>
+              <button id="copy-payload" class="text-xs text-pispi-400 hover:text-pispi-200 flex items-center gap-1 transition relative group">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-4 12h6a2 2 0 002-2v-8a2 2 0 00-2-2h-6a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                Copier
+                <span class="copy-tip absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] px-2 py-0.5 rounded opacity-0 transition-opacity pointer-events-none whitespace-nowrap">✓ Copié !</span>
+              </button>
+            </div>
+            <pre id="payload-text" class="text-[11px] font-mono text-pispi-300 break-all whitespace-pre-wrap leading-relaxed bg-pispi-950/60 rounded-xl p-3 max-h-28 overflow-y-auto"></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Decoded section -->
+      <div class="glass rounded-3xl p-7 mt-6 hidden" id="decoded-panel">
+        <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
+          <span class="w-6 h-6 rounded-lg bg-gold-500/20 flex items-center justify-center text-gold-400 text-xs">≡</span>
+          Données décodées
+        </h3>
+        <div id="decoded-table" class="rounded-xl overflow-hidden border border-pispi-800/50 divide-y divide-pispi-800/40"></div>
+      </div>
+    </div>
+
+    <!-- TAB: DECODE -->
+    <div id="tab-decode" class="tab-content hidden">
+      <div class="max-w-2xl mx-auto">
+        <div class="glass rounded-3xl p-7 glow">
+          <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-pispi-600 flex items-center justify-center text-xs">⌁</span>
+            Décoder un payload existant
+          </h2>
+          <div class="space-y-5">
+            <div>
+              <label class="block text-xs font-semibold text-pispi-400 uppercase tracking-widest mb-2">Payload PISPI</label>
+              <textarea id="decode-input" rows="4" placeholder="Collez votre payload ici..."
+                        class="w-full rounded-xl px-4 py-3 text-sm font-mono resize-none"
+                        style="background:rgba(7,35,26,0.7);border:1px solid rgba(34,150,104,0.3);color:#d8f3e3;"></textarea>
+            </div>
+            <button id="btn-decode"
+                    class="w-full py-3.5 rounded-xl bg-pispi-500 hover:bg-pispi-400 text-white font-bold text-sm transition-all active:scale-95">
+              Décoder
+            </button>
+          </div>
+        </div>
+
+        <div class="glass rounded-3xl p-7 mt-6 hidden" id="decode-result-panel">
+          <h3 class="text-sm font-bold text-white mb-4">Résultat</h3>
+          <div id="decode-result-table" class="rounded-xl overflow-hidden border border-pispi-800/50 divide-y divide-pispi-800/40"></div>
+        </div>
+
+        <div class="hidden mt-4 p-4 rounded-xl bg-red-900/30 border border-red-700/40 text-red-300 text-sm font-mono" id="decode-error"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-pispi-900 mt-16 py-8 text-center text-pispi-700 text-xs font-mono">
+    bceao-pispi-qrcode · Zone UEMOA · 8 pays · interopérabilité des paiements mobiles
+  </footer>
+
+  <script>
+    // --- Tab switching ---
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.remove('hidden');
+      });
+    });
+
+    // --- Radio type cards + référence obligatoire/optionnel ---
+    const STEP_LABELS = {
+      encode: 'Erreur d\'encodage',
+      decode: 'Erreur de décodage',
+      svg:    'Erreur de génération SVG',
+    };
+
+    function updateReferenceLabel(qrType) {
+      const isDynamic = qrType === 'DYNAMIC';
+      document.getElementById('ref-badge-required').classList.toggle('hidden', !isDynamic);
+      document.getElementById('ref-badge-optional').classList.toggle('hidden', isDynamic);
+      document.getElementById('ref-hint').classList.add('hidden');
+      document.getElementById('reference').classList.remove('border-red-500');
+
+      // Valeur par défaut selon le type
+      const refInput = document.getElementById('reference');
+      if (isDynamic && refInput.value === '') {
+        refInput.value = 'Tx-caisse1';
+      } else if (!isDynamic) {
+        refInput.value = '';
+        refInput.placeholder = '';
+      } else {
+        refInput.placeholder = 'ex: Tx-caisse1';
+      }
+    }
+
+    document.querySelectorAll('.type-radio input').forEach(radio => {
+      radio.addEventListener('change', () => {
+        document.querySelectorAll('.type-card').forEach(c => {
+          c.classList.remove('border-pispi-400', 'bg-pispi-800/40');
+        });
+        if (radio.checked) {
+          radio.closest('.type-radio').querySelector('.type-card').classList.add('border-pispi-400', 'bg-pispi-800/40');
+          updateReferenceLabel(radio.value);
+        }
+      });
+      if (radio.checked) {
+        radio.closest('.type-radio').querySelector('.type-card').classList.add('border-pispi-400', 'bg-pispi-800/40');
+        updateReferenceLabel(radio.value);
+      }
+    });
+
+    // --- Build decoded table ---
+    function buildTable(data, container) {
+      container.innerHTML = '';
+      const flat = flattenObj(data);
+      for (const [key, val] of Object.entries(flat)) {
+        const row = document.createElement('div');
+        row.className = 'decoded-row flex items-start gap-4 px-4 py-2.5';
+        row.innerHTML = `
+          <span class="text-[11px] font-mono text-pispi-500 w-44 shrink-0 pt-0.5">${key}</span>
+          <span class="text-sm text-pispi-100 break-all">${val ?? '<span class="text-pispi-700 italic">null</span>'}</span>
+        `;
+        container.appendChild(row);
+      }
+    }
+
+    function flattenObj(obj, prefix = '') {
+      return Object.entries(obj).reduce((acc, [k, v]) => {
+        const key = prefix ? `${prefix}.${k}` : k;
+        if (v !== null && typeof v === 'object' && !Array.isArray(v)) {
+          Object.assign(acc, flattenObj(v, key));
+        } else {
+          acc[key] = v;
+        }
+        return acc;
+      }, {});
+    }
+
+    function showGenError(msg, step) {
+      // Vider et cacher les panels résultats
+      document.getElementById('qr-svg-container').classList.add('hidden');
+      document.getElementById('qr-placeholder').classList.remove('hidden');
+      document.getElementById('payload-panel').classList.add('hidden');
+      document.getElementById('decoded-panel').classList.add('hidden');
+
+      // Afficher l'erreur
+      const wrap = document.getElementById('gen-error');
+      document.getElementById('gen-error-step').textContent = STEP_LABELS[step] || 'Erreur';
+      document.getElementById('gen-error-msg').textContent = msg;
+      wrap.classList.remove('hidden');
+    }
+    
+
+    // --- Generate ---
+    document.getElementById('btn-generate').addEventListener('click', async () => {
+      const btn = document.getElementById('btn-generate');
+      btn.textContent = 'Génération…';
+      btn.disabled = true;
+
+      const qrType = document.querySelector('input[name="qr_type"]:checked')?.value;
+      const reference = document.getElementById('reference').value.trim();
+
+      // Validation côté client : référence obligatoire pour DYNAMIC
+      if (qrType === 'DYNAMIC' && !reference) {
+        document.getElementById('ref-hint').classList.remove('hidden');
+        document.getElementById('reference').classList.add('border-red-500');
+        btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg> Générer le QR code`;
+        btn.disabled = false;
+        return;
+      }
+
+      const body = {
+        qr_type: qrType,
+        merchant_id: document.getElementById('merchant_id').value,
+        country: document.getElementById('country').value,
+        amount: document.getElementById('amount').value,
+        reference,
+      };
+
+      document.getElementById('gen-error').classList.add('hidden');
+      document.getElementById('ref-hint').classList.add('hidden');
+      document.getElementById('reference').classList.remove('border-red-500');
+
+      try {
+        const res = await fetch('/generate/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          showGenError(data.error, data.step);
+          return;
+        }
+
+        // Cacher l'erreur précédente
+        document.getElementById('gen-error').classList.add('hidden');
+
+        // QR SVG
+        document.getElementById('qr-placeholder').classList.add('hidden');
+
+        const svgContainer = document.getElementById('qr-svg-container');
+        // injecter dans l'inner, pas le container
+        document.getElementById('qr-svg-inner').innerHTML = data.svg;
+        svgContainer.classList.remove('hidden');
+
+        // Payload
+        document.getElementById('payload-text').textContent = data.payload;
+        document.getElementById('payload-panel').classList.remove('hidden');
+
+        // Decoded
+        buildTable(data.decoded, document.getElementById('decoded-table'));
+        document.getElementById('decoded-panel').classList.remove('hidden');
+
+      } catch (e) {
+        showGenError('Erreur réseau : ' + e.message, 'network');
+      } finally {
+        btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg> Générer le QR code`;
+        btn.disabled = false;
+      }
+    });
+
+    // --- Copy payload ---
+    document.getElementById('copy-payload').addEventListener('click', () => {
+      const text = document.getElementById('payload-text').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const tip = document.querySelector('.copy-tip');
+        tip.style.opacity = '1';
+        setTimeout(() => tip.style.opacity = '0', 1500);
+      });
+    });
+
+    // --- Decode ---
+    document.getElementById('btn-decode').addEventListener('click', async () => {
+      const payload = document.getElementById('decode-input').value.trim();
+      const errEl = document.getElementById('decode-error');
+      errEl.classList.add('hidden');
+      document.getElementById('decode-result-panel').classList.add('hidden');
+
+      if (!payload) return;
+
+      try {
+        const res = await fetch('/decode/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ payload }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          const step = data.step ? ` [${data.step}]` : '';
+          errEl.textContent = data.error + step;
+          errEl.classList.remove('hidden');
+          return;
+        }
+
+        buildTable(data.decoded, document.getElementById('decode-result-table'));
+        document.getElementById('decode-result-panel').classList.remove('hidden');
+
+      } catch (e) {
+        errEl.textContent = 'Erreur réseau : ' + e.message;
+        errEl.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
