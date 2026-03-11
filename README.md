@@ -14,6 +14,10 @@ Ce workspace regroupe des projets clés en main montrant comment consommer le SD
 - `javascript/` : application HTML/JS/Tailwind propulsée par Vite.
 - `react/` : application Next.js 16 (React 19) montrant l’usage du SDK dans un stack React moderne.
 - `angular/` : application Angular 17 standalone avec Tailwind et un design aligné sur la démo React.
+- `java/` : Application java  Java 21+  avec exemple Gradle et Maven 
+    - `/gradle-example` : Gradle 8.x 
+    - `/maven-example` : Maven 3.x
+
 
 ## Tâches communes
 
@@ -57,6 +61,15 @@ npm run build      # génère les bundles SSR dans dist/qrcode
 ```
 
 La démo Angular inclut Tailwind CSS, le support SSR et une configuration `ng build` autorisant les dépendances CommonJS utilisées par `@pi-spi/qrcode`.
+
+
+### Java
+
+```bash
+cd maven-example && mvn compile exec:java 
+# ou
+cd gradle-example && gradle run
+```
 
 ## Mettre à jour le SDK
 
