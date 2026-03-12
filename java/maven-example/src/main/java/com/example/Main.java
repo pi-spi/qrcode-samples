@@ -45,5 +45,25 @@ public class Main {
                         .build());
         System.out.println("3. Payload DYNAMIC (sans montant):");
         System.out.println("   " + payload2);
+        System.out.println();
+
+        // 4. Données additionnelles : clés personnalisées 05 (max 25 car.) et 11 ("000" ou "400")
+        AdditionalDataOverrides overrides = AdditionalDataOverrides.builder()
+                .purposeOfTransaction("FACTURE")
+                .putCustom("05", "REF-TX-20251112-001")
+                .putCustom("11", "400")
+                .build();
+        QrPayloadOptions options = QrPayloadOptions.builder().additionalData(overrides).build();
+        String payload3 = PispiQrCode.createQrPayload(
+                QrPayloadInput.builder()
+                        .alias("3497a720-ab11-4973-9619-534e04f263a1")
+                        .countryCode("CI")
+                        .qrType(QrType.STATIC)
+                        .referenceLabel("CAISSE_A01")
+                        .amount(2500)
+                        .build(),
+                options).payload();
+        System.out.println("4. Payload avec données additionnelles (05, 11, purposeOfTransaction):");
+        System.out.println("   " + payload3);
     }
 }

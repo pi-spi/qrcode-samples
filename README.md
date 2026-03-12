@@ -1,11 +1,12 @@
 # Exemples PI-SPI QR Code
 
-Ce workspace regroupe des projets clés en main montrant comment consommer le SDK [`@pi-spi/qrcode`](https://www.npmjs.com/package/@pi-spi/qrcode) dans différents environnements. Chaque démo propose la même expérience utilisateur afin de comparer facilement les implémentations.
+Ce workspace regroupe des projets clés en main montrant comment consommer le SDK `[@pi-spi/qrcode](https://www.npmjs.com/package/@pi-spi/qrcode)` dans différents environnements. Chaque démo propose la même expérience utilisateur afin de comparer facilement les implémentations.
 
 ## Prérequis
 
 - Node.js 18 LTS ou plus récent (Node 20 LTS recommandé)
 - npm 9 ou supérieur
+- Java 21 LTS ou supérieur pour les tests java
 
 > ℹ️ Certains outils signalent les versions impaires de Node. Pour la production ou la CI, privilégiez une version LTS.
 
@@ -14,10 +15,9 @@ Ce workspace regroupe des projets clés en main montrant comment consommer le SD
 - `javascript/` : application HTML/JS/Tailwind propulsée par Vite.
 - `react/` : application Next.js 16 (React 19) montrant l’usage du SDK dans un stack React moderne.
 - `angular/` : application Angular 17 standalone avec Tailwind et un design aligné sur la démo React.
-- `java/` : Application java  Java 21+  avec exemple Gradle et Maven 
-    - `/gradle-example` : Gradle 8.x 
-    - `/maven-example` : Maven 3.x
-
+- `java/` : Application Java 21+ avec exemples Gradle et Maven.
+  - `gradle-example/` : Gradle 8.x.
+  - `maven-example/` : Maven 3.x.
 
 ## Tâches communes
 
@@ -38,7 +38,7 @@ npm run dev        # démarre le serveur de développement
 npm run build      # génère le bundle statique dans dist/
 ```
 
-Le serveur de développement affiche l’URL d’accès (par défaut : http://localhost:5173).
+Le serveur de développement affiche l’URL d’accès (par défaut : [http://localhost:5173](http://localhost:5173)).
 
 ### React (Next.js)
 
@@ -62,22 +62,31 @@ npm run build      # génère les bundles SSR dans dist/qrcode
 
 La démo Angular inclut Tailwind CSS, le support SSR et une configuration `ng build` autorisant les dépendances CommonJS utilisées par `@pi-spi/qrcode`.
 
-
 ### Java
 
 ```bash
-cd maven-example && mvn compile exec:java 
+cd java/maven-example && mvn compile exec:java
 # ou
-cd gradle-example && gradle run
+cd java/gradle-example && gradle run
 ```
 
 ## Mettre à jour le SDK
 
-Toutes les démos dépendent du paquet publié `@pi-spi/qrcode`. Après la publication d’une nouvelle version :
+### Projets JavaScript (Vite, React, Angular)
 
-1. Modifiez la version du SDK dans chaque `package.json` (JavaScript, React, Angular).
-2. Exécutez `npm install` dans chacun des sous-projets.
+Les démos JS dépendent du paquet publié `@pi-spi/qrcode`. Après la publication d’une nouvelle version :
+
+1. Modifiez la version du SDK dans le `package.json` de chaque sous-projet (`javascript/`, `react/`, `angular/`).
+2. Exécutez `npm install` dans chacun de ces sous-projets.
 3. Relancez un build (`npm run build`) pour vérifier le bon fonctionnement.
+
+### Projets Java (Maven, Gradle)
+
+Les exemples Java dépendent de l’artefact `int.bceao.pispi:qrcode`. Après la publication d’une nouvelle version :
+
+1. Modifiez la version du SDK dans le `pom.xml` (`java/maven-example/`) ou le `build.gradle` (`java/gradle-example/`).
+2. Exécutez `mvn clean install` dans `java/maven-example/` ou `gradle build` dans `java/gradle-example/`.
+3. Relancez l’exécution (`mvn compile exec:java` ou `gradle run`) pour vérifier le bon fonctionnement.
 
 ## Dépannage
 
