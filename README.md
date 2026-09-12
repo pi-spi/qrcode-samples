@@ -15,6 +15,7 @@ Ce workspace regroupe des projets clés en main montrant comment consommer le SD
 - `javascript/` : application HTML/JS/Tailwind propulsée par Vite.
 - `react/` : application Next.js 16 (React 19) montrant l’usage du SDK dans un stack React moderne.
 - `angular/` : application Angular 17 standalone avec Tailwind et un design aligné sur la démo React.
+- `php/` : application PHP 8.2+ sans framework, servie par le serveur intégré.
 - `java/` : Application Java 21+ avec exemples Gradle et Maven.
   - `gradle-example/` : Gradle 8.x.
   - `maven-example/` : Maven 3.x.

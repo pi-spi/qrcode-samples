@@ -1,0 +1,22 @@
+{
+    "name": "pi-spi/qrcode-sample-php",
+    "description": "Demo PHP de generation et de decodage de QR Codes PI-SPI",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2",
+        "bacon/bacon-qr-code": "^3.0",
+        "catidegla/pi-spi-qr": "^0.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "PiSpi\\Demo\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "scripts": {
+        "serve": "php -S localhost:8000 -t public"
+    }
+}
