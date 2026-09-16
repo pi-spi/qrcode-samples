@@ -7,6 +7,7 @@ Ce workspace regroupe des projets clés en main montrant comment consommer le SD
 - Node.js 18 LTS ou plus récent (Node 20 LTS recommandé)
 - npm 9 ou supérieur
 - Java 21 LTS ou supérieur pour les tests java
+- PHP 8.2 ou supérieur et Composer 2 pour la démo php
 
 > ℹ️ Certains outils signalent les versions impaires de Node. Pour la production ou la CI, privilégiez une version LTS.
 
@@ -18,6 +19,9 @@ Ce workspace regroupe des projets clés en main montrant comment consommer le SD
 - `java/` : Application Java 21+ avec exemples Gradle et Maven.
   - `gradle-example/` : Gradle 8.x.
   - `maven-example/` : Maven 3.x.
+- `django/` : application Django servant la même interface côté serveur.
+- `flutter/` : application Flutter utilisant le SDK Dart.
+- `php/` : application PHP 8.2+ sans framework, même interface et mêmes endpoints que la démo Django.
 
 ## Tâches communes
 
@@ -69,6 +73,22 @@ cd java/maven-example && mvn compile exec:java
 # ou
 cd java/gradle-example && gradle run
 ```
+
+### PHP
+
+```bash
+cd php
+composer install
+composer start     # équivaut à php -S localhost:8000 -t public
+```
+
+La démo écoute sur [http://localhost:8000](http://localhost:8000). Elle n'utilise
+aucun framework et expose les mêmes endpoints que la démo Django, `POST /generate`
+et `POST /decode`, au même contrat JSON.
+
+> Il n'existe pas de SDK PI-SPI officiel en PHP. Cette démo s'appuie sur
+> [`catidegla/pi-spi-qr`](https://packagist.org/packages/catidegla/pi-spi-qr),
+> un paquet MIT indépendant et sans dépendance. Voir `php/README.md`.
 
 ## Mettre à jour le SDK
 
