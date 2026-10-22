@@ -16,7 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <pispi.qrcode.version>0.1.2</pispi.qrcode.version>
+        <pispi.qrcode.version>1.0.2</pispi.qrcode.version>
     </properties>
 
     <dependencies>
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>io.github.pi-spi</groupId>
             <artifactId>bceao-pispi-qrcode</artifactId>
-            <version>1.0.2</version>
+            <version>${pispi.qrcode.version}</version>
         </dependency>
     </dependencies>
 

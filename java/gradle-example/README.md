@@ -1,6 +1,6 @@
 # Exemple Gradle - SDK PI-SPI QR Code
 
-Projet Gradle autonome montrant comment utiliser le SDK `int.bceao.pispi:qrcode`.
+Projet Gradle autonome montrant comment utiliser le SDK `io.github.pi-spi:bceao-pispi-qrcode`.
 
 ## Prérequis
 
@@ -26,7 +26,7 @@ Ou avec le wrapper (si disponible) :
 
 ```groovy
 dependencies {
-    implementation 'int.bceao.pispi:qrcode:0.1.2'
+    implementation 'io.github.pi-spi:bceao-pispi-qrcode:1.0.2'
 }
 ```
 
@@ -34,7 +34,7 @@ dependencies {
 
 ```kotlin
 dependencies {
-    implementation("int.bceao.pispi:qrcode:0.1.2")
+    implementation("io.github.pi-spi:bceao-pispi-qrcode:1.0.2")
 }
 ```
 

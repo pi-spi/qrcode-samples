@@ -18,11 +18,11 @@ repositories {
 }
 
 ext {
-    pispiQrcodeVersion = '0.1.2'
+    pispiQrcodeVersion = '1.0.2'
 }
 
 dependencies {
-    implementation "int.bceao.pispi:qrcode:${pispiQrcodeVersion}"
+    implementation "io.github.pi-spi:bceao-pispi-qrcode:${pispiQrcodeVersion}"
 }
 
 application {

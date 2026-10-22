@@ -62,7 +62,7 @@ public class Main {
                         .amount(2500)
                         .build(),
                 options).payload();
-        System.out.println("4. Payload avec données additionnelles (05, 11, purposeOfTransaction):");
+        System.out.println("4. Payload avec données additionnelles (05, 11):");
         System.out.println("   " + payload3);
     }
 }
