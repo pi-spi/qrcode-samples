@@ -22,9 +22,9 @@
     <dependencies>
         <!-- SDK PI-SPI QR Code -->
         <dependency>
-            <groupId>int.bceao.pispi</groupId>
-            <artifactId>qrcode</artifactId>
-            <version>${pispi.qrcode.version}</version>
+            <groupId>io.github.pi-spi</groupId>
+            <artifactId>bceao-pispi-qrcode</artifactId>
+            <version>1.0.2</version>
         </dependency>
     </dependencies>
 

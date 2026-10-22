@@ -49,7 +49,6 @@ public class Main {
 
         // 4. Données additionnelles : clés personnalisées 05 (max 25 car.) et 11 ("000" ou "400")
         AdditionalDataOverrides overrides = AdditionalDataOverrides.builder()
-                .purposeOfTransaction("FACTURE")
                 .putCustom("05", "REF-TX-20251112-001")
                 .putCustom("11", "400")
                 .build();

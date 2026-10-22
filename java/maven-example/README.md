@@ -18,9 +18,9 @@ mvn compile exec:java
 
 ```xml
 <dependency>
-    <groupId>int.bceao.pispi</groupId>
-    <artifactId>qrcode</artifactId>
-    <version>0.1.2</version>
+    <groupId>io.github.pi-spi</groupId>
+    <artifactId>bceao-pispi-qrcode</artifactId>
+    <version>1.0.2</version>
 </dependency>
 ```
 
