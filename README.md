@@ -82,7 +82,7 @@ Les démos JS dépendent du paquet publié `@pi-spi/qrcode`. Après la publicati
 
 ### Projets Java (Maven, Gradle)
 
-Les exemples Java dépendent de l’artefact `int.bceao.pispi:qrcode`. Après la publication d’une nouvelle version :
+Les exemples Java dépendent de l’artefact `io.github.pi-spi:bceao-pispi-qrcode`. Après la publication d’une nouvelle version :
 
 1. Modifiez la version du SDK dans le `pom.xml` (`java/maven-example/`) ou le `build.gradle` (`java/gradle-example/`).
 2. Exécutez `mvn clean install` dans `java/maven-example/` ou `gradle build` dans `java/gradle-example/`.
